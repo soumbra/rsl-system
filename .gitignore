@@ -1,0 +1,36 @@
+ =====================
+# Node / Vue
+# =====================
+node_modules/
+dist/
+.env
+.vite/
+*.log
+
+# =====================
+# IDEs
+# =====================
+.vscode/
+.idea/
+*.iml
+
+# =====================
+# Java / Spring Boot
+# =====================
+target/
+*.class
+*.jar
+*.war
+*.log
+
+# =====================
+# Docker
+# =====================
+docker-compose.override.yml
+*.env
+
+# =====================
+# OS
+# =====================
+.DS_Store
+Thumbs.db
