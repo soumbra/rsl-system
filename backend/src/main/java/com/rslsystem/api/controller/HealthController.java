@@ -1,12 +1,12 @@
 package com.rslsystem.api.controller;
 
 import com.rslsystem.api.constants.ApiConstants;
+import com.rslsystem.api.dto.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,24 +15,24 @@ import java.util.Map;
 public class HealthController {
 
     @GetMapping("/health")
-    public ResponseEntity<Map<String, Object>> health() {
-        Map<String, Object> response = new HashMap<>();
-        response.put(ApiConstants.STATUS, ApiConstants.STATUS_UP);
-        response.put(ApiConstants.TIMESTAMP, LocalDateTime.now());
-        response.put(ApiConstants.SERVICE, ApiConstants.SERVICE_NAME);
-        response.put(ApiConstants.VERSION, ApiConstants.SERVICE_VERSION);
+    public ResponseEntity<ResponseWrapper<Map<String, Object>>> health() {
+        Map<String, Object> healthData = new HashMap<>();
+        healthData.put(ApiConstants.SERVICE, ApiConstants.SERVICE_NAME);
+        healthData.put(ApiConstants.VERSION, ApiConstants.SERVICE_VERSION);
         
+        ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(healthData);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Map<String, Object>> info() {
-        Map<String, Object> response = new HashMap<>();
-        response.put("name", "RSL System - Sistema de Revisões Sistemáticas");
-        response.put(ApiConstants.DESCRIPTION, ApiConstants.SERVICE_DESCRIPTION);
-        response.put("java_version", System.getProperty("java.version"));
-        response.put("spring_boot", "3.x");
+    public ResponseEntity<ResponseWrapper<Map<String, Object>>> info() {
+        Map<String, Object> infoData = new HashMap<>();
+        infoData.put("name", "RSL System - Sistema de Revisões Sistemáticas");
+        infoData.put(ApiConstants.DESCRIPTION, ApiConstants.SERVICE_DESCRIPTION);
+        infoData.put("java_version", System.getProperty("java.version"));
+        infoData.put("spring_boot", "3.x");
         
+        ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(infoData);
         return ResponseEntity.ok(response);
     }
 }

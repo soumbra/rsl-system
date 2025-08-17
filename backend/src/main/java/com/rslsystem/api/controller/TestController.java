@@ -1,10 +1,10 @@
 package com.rslsystem.api.controller;
 
 import com.rslsystem.api.constants.ApiConstants;
+import com.rslsystem.api.dto.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,33 +13,33 @@ import java.util.Map;
 public class TestController {
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> testGet() {
-        Map<String, Object> response = new HashMap<>();
-        response.put(ApiConstants.MESSAGE, "GET request funcionando!");
-        response.put(ApiConstants.TIMESTAMP, LocalDateTime.now());
-        response.put(ApiConstants.CORS_STATUS, ApiConstants.CORS_OK);
+    public ResponseEntity<ResponseWrapper<Map<String, Object>>> testGet() {
+        Map<String, Object> testData = new HashMap<>();
+        testData.put(ApiConstants.MESSAGE, "GET request funcionando!");
+        testData.put(ApiConstants.CORS_STATUS, ApiConstants.CORS_OK);
         
+        ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(testData);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> testPost(@RequestBody Map<String, Object> payload) {
-        Map<String, Object> response = new HashMap<>();
-        response.put(ApiConstants.MESSAGE, "POST request funcionando!");
-        response.put(ApiConstants.RECEIVED_DATA, payload);
-        response.put(ApiConstants.TIMESTAMP, LocalDateTime.now());
-        response.put(ApiConstants.CORS_STATUS, ApiConstants.CORS_OK);
+    public ResponseEntity<ResponseWrapper<Map<String, Object>>> testPost(@RequestBody Map<String, Object> payload) {
+        Map<String, Object> testData = new HashMap<>();
+        testData.put(ApiConstants.MESSAGE, "POST request funcionando!");
+        testData.put(ApiConstants.RECEIVED_DATA, payload);
+        testData.put(ApiConstants.CORS_STATUS, ApiConstants.CORS_OK);
         
+        ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(testData);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/cors")
-    public ResponseEntity<Map<String, Object>> testCors() {
-        Map<String, Object> response = new HashMap<>();
-        response.put(ApiConstants.MESSAGE, "CORS configurado corretamente!");
-        response.put(ApiConstants.FRONTEND_CAN_ACCESS, true);
-        response.put(ApiConstants.TIMESTAMP, LocalDateTime.now());
+    public ResponseEntity<ResponseWrapper<Map<String, Object>>> testCors() {
+        Map<String, Object> corsData = new HashMap<>();
+        corsData.put(ApiConstants.MESSAGE, "CORS configurado corretamente!");
+        corsData.put(ApiConstants.FRONTEND_CAN_ACCESS, true);
         
+        ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(corsData);
         return ResponseEntity.ok(response);
     }
 }
