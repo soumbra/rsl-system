@@ -29,9 +29,12 @@ public class SecurityConfig {
             // Configurar autorização de endpoints
             .authorizeHttpRequests(auth -> auth
                 // Endpoints públicos (sem autenticação)
-                .requestMatchers("/api/health", "/api/info", "/api/test/**").permitAll()
+                //.requestMatchers("/api/health", "/api/info", "/api/test/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
-                
+
+                //Por enquanto liberar tudo
+                .requestMatchers("/api/**").permitAll()
+
                 // Swagger/OpenAPI (ambiente dev)
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 
