@@ -1,6 +1,12 @@
 package com.rslsystem.api.constants;
 
-public final class ApiConstants {
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+@Getter
+public class ApiConstants {
     
     public static final String STATUS = "status";
     public static final String MESSAGE = "message";
@@ -11,19 +17,19 @@ public final class ApiConstants {
     public static final String CORS_STATUS = "cors_status";
     public static final String RECEIVED_DATA = "received_data";
     public static final String FRONTEND_CAN_ACCESS = "frontend_can_access";
-    
+
     // Response Values
     public static final String STATUS_UP = "UP";
     public static final String STATUS_DOWN = "DOWN";
     public static final String CORS_OK = "OK";
+
+    // Valores dinâmicos dos profiles (injetados pelo Spring)
+    @Value("${rsl.system.name}")
+    private String serviceName;
     
-    // Service Info
-    public static final String SERVICE_NAME = "RSL System API";
-    public static final String SERVICE_VERSION = "1.0.0";
-    public static final String SERVICE_DESCRIPTION = "API para gerenciamento de revisões sistemáticas da literatura";
+    @Value("${rsl.system.version}")
+    private String serviceVersion;
     
-    // Private constructor to prevent instantiation
-    private ApiConstants() {
-        throw new UnsupportedOperationException("Esta é uma classe de constantes e não pode ser instanciada");
-    }
+    @Value("${rsl.system.description}")
+    private String serviceDescription;
 }

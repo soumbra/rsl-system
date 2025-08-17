@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+      
+logging:
+  level:
+    org.springframework.security: WARN
+    org.hibernate: WARN
+    com.rslsystem.api: INFO
+    root: WARN
+
+# CORS para produção
+cors:
+  allowed-origins:
+    - "https://rsl-system.com"

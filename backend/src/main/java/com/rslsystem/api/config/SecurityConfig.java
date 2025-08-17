@@ -1,5 +1,6 @@
 package com.rslsystem.api.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,39 +18,36 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Desabilitar CSRF (API REST não precisa)
-            .csrf(csrf -> csrf.disable())
-            
-            // Configurar CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            
-            // Configurar autorização de endpoints
-            .authorizeHttpRequests(auth -> auth
-                // Endpoints públicos (sem autenticação)
-                //.requestMatchers("/api/health", "/api/info", "/api/test/**").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
-
-                //Por enquanto liberar tudo
-                .requestMatchers("/api/**").permitAll()
-
-                // Swagger/OpenAPI (ambiente dev)
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                
-                // Todos os outros endpoints precisam de autenticação (futuro JWT)
-                .anyRequest().authenticated()
-            )
-            
-            // Configurar sessão (stateless para APIs REST)
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            
-            // Desabilitar formulário de login padrão
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable());
+                // Desabilitar CSRF (API REST não precisa)
+                .csrf(csrf -> csrf.disable())
+                // Configurar CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Configurar autorização de endpoints
+                .authorizeHttpRequests(auth -> auth
+                        // Endpoints públicos (sem autenticação)
+                        // NOTA: Configuração específica para JWT (descomentará quando implementar)
+                        //.requestMatchers("/api/health", "/api/info", "/api/test/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+                        // TEMPORÁRIO: Por enquanto liberar tudo para desenvolvimento
+                        .requestMatchers("/api/**").permitAll()
+                        // Swagger/OpenAPI (ambiente dev)
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Todos os outros endpoints precisam de autenticação (futuro JWT)
+                        .anyRequest().authenticated()
+                )
+                // Configurar sessão (stateless para APIs REST)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                // Desabilitar formulário de login padrão
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable());
 
         return http.build();
     }
@@ -58,15 +56,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permitir origem do frontend Vue.js
-        configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173",  // Vue.js dev server
-            "http://localhost:3000"   // Alternativa comum
-        ));
+        // Usar origens dos profiles
+        configuration.setAllowedOrigins(allowedOrigins);
         
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
         ));
         
         // Headers permitidos

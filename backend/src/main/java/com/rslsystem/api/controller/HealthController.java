@@ -14,11 +14,17 @@ import java.util.Map;
 @RequestMapping("/api")
 public class HealthController {
 
+    private final ApiConstants apiConstants;
+
+    public HealthController(ApiConstants apiConstants) {
+        this.apiConstants = apiConstants;
+    }
+
     @GetMapping("/health")
     public ResponseEntity<ResponseWrapper<Map<String, Object>>> health() {
         Map<String, Object> healthData = new HashMap<>();
-        healthData.put(ApiConstants.SERVICE, ApiConstants.SERVICE_NAME);
-        healthData.put(ApiConstants.VERSION, ApiConstants.SERVICE_VERSION);
+        healthData.put(ApiConstants.SERVICE, apiConstants.getServiceName());
+        healthData.put(ApiConstants.VERSION, apiConstants.getServiceVersion());
         
         ResponseWrapper<Map<String, Object>> response = ResponseWrapper.success(healthData);
         return ResponseEntity.ok(response);
@@ -28,7 +34,7 @@ public class HealthController {
     public ResponseEntity<ResponseWrapper<Map<String, Object>>> info() {
         Map<String, Object> infoData = new HashMap<>();
         infoData.put("name", "RSL System - Sistema de Revisões Sistemáticas");
-        infoData.put(ApiConstants.DESCRIPTION, ApiConstants.SERVICE_DESCRIPTION);
+        infoData.put(ApiConstants.DESCRIPTION, apiConstants.getServiceDescription());
         infoData.put("java_version", System.getProperty("java.version"));
         infoData.put("spring_boot", "3.x");
         
