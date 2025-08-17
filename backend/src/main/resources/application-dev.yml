@@ -1,9 +1,17 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rsl_system
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
-      
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
 logging:
   level:
     org.springframework.security: DEBUG
@@ -12,6 +20,6 @@ logging:
 
 # CORS para desenvolvimento
 cors:
-  allowed-origins: 
+  allowed-origins:
     - "http://localhost:3000"
     - "http://localhost:5173"

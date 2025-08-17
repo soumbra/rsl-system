@@ -2,12 +2,12 @@ package com.rslsystem.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class RslSystemApiApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(RslSystemApiApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(RslSystemApiApplication.class, args);
+    }
 }
