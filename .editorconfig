@@ -1,0 +1,52 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+
+# Frontend files (JS, TS, Vue, CSS)
+[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,css,scss,sass,less,styl}]
+indent_size = 2
+indent_style = space
+max_line_length = 100
+
+# Java files
+[*.java]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+
+# YAML files (Docker, GitHub Actions, etc.)
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space
+max_line_length = 80
+
+# XML/Maven files
+[*.{xml,pom}]
+indent_size = 2
+indent_style = space
+max_line_length = 120
+
+# JSON files
+[*.json]
+indent_size = 2
+indent_style = space
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 80
+
+# Properties files
+[*.properties]
+indent_size = 4
+indent_style = space
+
+# Shell scripts
+[*.sh]
+indent_size = 2
+indent_style = space
+end_of_line = lf
