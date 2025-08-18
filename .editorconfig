@@ -12,11 +12,11 @@ indent_size = 2
 indent_style = space
 max_line_length = 100
 
-# Java files
+# Java files - AJUSTADO para Google Style (2 espaços)
 [*.java]
-indent_size = 4
+indent_size = 2
 indent_style = space
-max_line_length = 120
+max_line_length = 100
 
 # YAML files (Docker, GitHub Actions, etc.)
 [*.{yml,yaml}]
