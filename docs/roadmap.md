@@ -70,3 +70,33 @@ Qual você prefere atacar primeiro? Assim fazemos direito, sem pular etapas!
 - Elasticsearch para busca  
 - Sistema de backup automático  
 - Deploy em produção (Docker Swarm/Kubernetes)  
+
+-------------
+# Core
+
+Frontend Core:
+Vuetify + tema base
+Axios configurado apontando para backend
+Pinia store básico
+Roteamento básico (login, dashboard)
+
+Backend Core:
+Spring Security básico (sem JWT ainda)
+CORS configurado para frontend
+Health check endpoint
+Perfis de ambiente (dev, prod)
+
+Docker Core:
+Multi-stage build
+docker-compose com frontend + backend + postgres
+Variáveis de ambiente organizadas
+
+
+CI/CD - Melhor momento:
+DEPOIS de ter o core funcionando! Recomendo:
+
+Agora: Core funcionando local
+Próxima semana: CI básico (build + test)
+2ª semana: CD para ambiente de dev
+3ª semana: CD para produção
+
