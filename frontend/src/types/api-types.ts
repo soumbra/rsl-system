@@ -18,7 +18,7 @@ export interface ApiInfoData {
   spring_boot: string
 }
 
-///api/test/cors 
+///api/test/cors
 export interface TestData {
   message: string
   frontend_can_access?: boolean

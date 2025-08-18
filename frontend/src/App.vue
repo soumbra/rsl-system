@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import { RouterView } from 'vue-router'
+  import { RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -12,5 +11,5 @@ import { RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-/* Remove todos os estilos do template padrão Vue */
+  /* Remove todos os estilos do template padrão Vue */
 </style>

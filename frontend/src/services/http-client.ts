@@ -6,20 +6,20 @@ const api = axios.create({
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    Accept: 'application/json'
   }
 })
 
 api.interceptors.request.use(
   (config) => {
     console.log(`[API] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`)
-    
+
     // TODO: JWT quando implementar auth
     const token = localStorage.getItem('rsl_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     return config
   },
   (error: AxiosError) => {
@@ -38,9 +38,9 @@ api.interceptors.response.use(
     const status = error.response?.status
     const message = error.response?.data?.message || error.message
     const url = error.config?.url
-    
+
     console.error(`[API] ${status || 'NETWORK'} ERROR on ${url}:`, message)
-    
+
     // Determinar mensagem de erro baseada no status
     const getErrorMessage = (): string => {
       switch (status) {
@@ -65,7 +65,7 @@ api.interceptors.response.use(
           return message || 'Erro desconhecido'
       }
     }
-    
+
     // Criar Error customizado com informações úteis
     const customError = new Error(getErrorMessage())
     Object.assign(customError, {
@@ -74,7 +74,7 @@ api.interceptors.response.use(
       url,
       isNetworkError: !status
     })
-    
+
     return Promise.reject(customError)
   }
 )

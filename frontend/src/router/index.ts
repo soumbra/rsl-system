@@ -75,7 +75,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
   */
-  
+
   // Permitir todas as navegações durante desenvolvimento
   next()
 })

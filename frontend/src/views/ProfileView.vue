@@ -13,10 +13,8 @@
           <v-card-title>Meu Perfil</v-card-title>
           <v-card-text>
             <p>Página de perfil em desenvolvimento...</p>
-            
-            <v-btn to="/dashboard" color="primary" class="mt-4">
-              Voltar ao Dashboard
-            </v-btn>
+
+            <v-btn to="/dashboard" color="primary" class="mt-4">Voltar ao Dashboard</v-btn>
           </v-card-text>
         </v-card>
       </v-container>

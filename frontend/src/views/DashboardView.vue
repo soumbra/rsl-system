@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+  import { ref } from 'vue'
 
-const drawer = ref(false)
+  const drawer = ref(false)
 </script>
 
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      temporary
-    >
+    <v-navigation-drawer v-model="drawer" temporary>
       <v-list>
         <v-list-item to="/dashboard" title="Dashboard" prepend-icon="mdi-view-dashboard" />
         <v-list-item to="/reviews" title="Revisões" prepend-icon="mdi-book-open-variant" />
@@ -21,9 +18,7 @@ const drawer = ref(false)
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title>RSL System - Dashboard</v-toolbar-title>
       <v-spacer />
-      <v-btn to="/login" variant="outlined" color="error">
-        Sair
-      </v-btn>
+      <v-btn to="/login" variant="outlined" color="error">Sair</v-btn>
     </v-app-bar>
 
     <v-main>
@@ -36,7 +31,7 @@ const drawer = ref(false)
               </v-card-title>
               <v-card-text>
                 <p>Sistema de Revisões Sistemáticas da Literatura</p>
-                
+
                 <v-row class="mt-4">
                   <v-col cols="12" md="4">
                     <v-card color="primary" variant="tonal">
@@ -47,7 +42,7 @@ const drawer = ref(false)
                       </v-card-text>
                     </v-card>
                   </v-col>
-                  
+
                   <v-col cols="12" md="4">
                     <v-card color="success" variant="tonal">
                       <v-card-title>Artigos</v-card-title>
@@ -57,7 +52,7 @@ const drawer = ref(false)
                       </v-card-text>
                     </v-card>
                   </v-col>
-                  
+
                   <v-col cols="12" md="4">
                     <v-card color="warning" variant="tonal">
                       <v-card-title>Pendências</v-card-title>

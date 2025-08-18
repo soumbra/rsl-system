@@ -1,8 +1,8 @@
 import api from './http-client'
-import type { 
-  ResponseWrapper, 
-  HealthData, 
-  ApiInfoData, 
+import type {
+  ResponseWrapper,
+  HealthData,
+  ApiInfoData,
   TestData,
   ApiError
 } from '@/types/api-types'
@@ -18,8 +18,8 @@ export const healthService = {
       throw new Error(`Falha no health check: ${apiError.message}`)
     }
   },
-  
-  // GET /api/info 
+
+  // GET /api/info
   async getApiInfo(): Promise<ApiInfoData> {
     try {
       const response = await api.get<ResponseWrapper<ApiInfoData>>('/info')
@@ -29,7 +29,7 @@ export const healthService = {
       throw new Error(`Falha ao obter informações da API: ${apiError.message}`)
     }
   },
-  
+
   // GET /api/test
   async testBasic(): Promise<TestData> {
     try {
@@ -40,7 +40,7 @@ export const healthService = {
       throw new Error(`Falha no teste básico: ${apiError.message}`)
     }
   },
-  
+
   // GET /api/test/cors
   async testCors(): Promise<TestData> {
     try {
