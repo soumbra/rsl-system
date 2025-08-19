@@ -1,4 +1,4 @@
-import api from './http-client'
+import api from './httpClient'
 import type {
   ResponseWrapper,
   HealthData,
