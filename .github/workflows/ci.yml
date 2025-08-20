@@ -28,7 +28,7 @@ jobs:
           --health-cmd "pg_isready -U rsl_user -d rsl_system_test"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
 
     steps:
       - name: 📥 Checkout
@@ -48,6 +48,14 @@ jobs:
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
+      - name: ⏳ Esperar PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }}; do
+            echo "Aguardando PostgreSQL iniciar..."
+            sleep 2
+          done
+          echo "✅ PostgreSQL pronto!"
+
       - name: 🧪 Test Backend
         run: |
           cd backend
@@ -66,20 +74,24 @@ jobs:
       - name: 🐳 Test Docker Stack
         run: |
           docker compose up -d --build
-          echo "⏳ Aguardando serviços inicializarem..."
-          sleep 45
+          echo "⏳ Aguardando Docker stack inicializar..."
 
-          echo "📋 Verificando logs do backend..."
-          docker compose logs backend
+          # Aguardar backend Spring Boot
+          for i in {1..20}; do
+            if curl -f http://localhost:8080/actuator/health > /dev/null 2>&1; then
+              echo "✅ Backend Spring Boot pronto!"
+              break
+            fi
+            echo "⏳ Tentativa $i/20 - aguardando Spring Boot..."
+            sleep 10
+          done
 
-          echo "📋 Verificando containers rodando..."
-          docker compose ps
-
+          # Testar endpoints
           echo "🧪 Testando backend health check..."
-          curl -f http://localhost:8080/api/health || exit 1
+          curl -f http://localhost:8080/api/health
 
           echo "🧪 Testando frontend..."
-          curl -f http://localhost:5173 || exit 1
+          curl -f http://localhost:5173
 
           echo "✅ Docker stack funcionando!"
           docker compose down -v
