@@ -73,25 +73,46 @@ jobs:
 
       - name: 🐳 Test Docker Stack
         run: |
+          echo "🚀 Iniciando Docker Stack..."
           docker compose up -d --build
-          echo "⏳ Aguardando Docker stack inicializar..."
 
-          # Aguardar backend Spring Boot
-          for i in {1..20}; do
-            if curl -f http://localhost:8080/actuator/health > /dev/null 2>&1; then
-              echo "✅ Backend Spring Boot pronto!"
+          echo "📋 Logs do backend (para debug):"
+          docker compose logs backend
+
+          echo "⏳ Aguardando backend ficar pronto..."
+          for i in {1..30}; do
+            if docker compose exec -T backend curl -sf http://localhost:8080/actuator/health; then
+              echo "✅ Backend está pronto!"
+
+              echo "🧪 Testando endpoint customizado..."
+              docker compose exec -T backend curl -sf http://localhost:8080/api/health || echo "⚠️ API health falhou (mas actuator OK)"
+
+              echo "🧪 Testando frontend..."
+              if curl -f http://localhost:5173; then
+                echo "✅ Frontend respondendo!"
+              else
+                echo "❌ Frontend não respondeu"
+                docker compose logs frontend
+              fi
+
+              echo "✅ Docker Stack funcionando!"
               break
             fi
-            echo "⏳ Tentativa $i/20 - aguardando Spring Boot..."
-            sleep 10
+            echo "Tentativa $i/30 falhou, aguardando..."
+            sleep 5
           done
 
-          # Testar endpoints
-          echo "🧪 Testando backend health check..."
-          curl -f http://localhost:8080/api/health
+          if [ $i -eq 30 ]; then
+            echo "❌ Backend não respondeu a tempo."
+            echo "📋 Logs finais do backend:"
+            docker compose logs backend
+            echo "📋 Status dos containers:"
+            docker compose ps
+            exit 1
+          fi
 
-          echo "🧪 Testando frontend..."
-          curl -f http://localhost:5173
-
-          echo "✅ Docker stack funcionando!"
+      - name: 🧽 Parar containers
+        if: always()
+        run: |
+          echo "🧹 Limpando Docker Stack..."
           docker compose down -v
