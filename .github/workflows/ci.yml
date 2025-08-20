@@ -68,9 +68,18 @@ jobs:
           docker compose up -d --build
           echo "⏳ Aguardando serviços inicializarem..."
           sleep 45
+
+          echo "📋 Verificando logs do backend..."
+          docker compose logs backend
+
+          echo "📋 Verificando containers rodando..."
+          docker compose ps
+
           echo "🧪 Testando backend health check..."
           curl -f http://localhost:8080/api/health || exit 1
+
           echo "🧪 Testando frontend..."
           curl -f http://localhost:5173 || exit 1
+
           echo "✅ Docker stack funcionando!"
           docker compose down -v
