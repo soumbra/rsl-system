@@ -2,7 +2,7 @@ name: 🚀 RSL System CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: 🐳 Test Docker Stack
         run: |
-          docker-compose up -d --build
+          docker compose up -d --build
           echo "⏳ Aguardando serviços inicializarem..."
           sleep 45
           echo "🧪 Testando backend health check..."
@@ -73,4 +73,4 @@ jobs:
           echo "🧪 Testando frontend..."
           curl -f http://localhost:5173 || exit 1
           echo "✅ Docker stack funcionando!"
-          docker-compose down -v
+          docker compose down -v
