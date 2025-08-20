@@ -10,6 +10,10 @@ env:
   POSTGRES_DB: rsl_system_test
   POSTGRES_USER: rsl_user
   POSTGRES_PASSWORD: test_password
+  POSTGRES_PORT: 5432
+  BACKEND_PORT: 8080
+  FRONTEND_PORT: 5173
+  SPRING_PROFILE: dev
 
 jobs:
   test:
@@ -76,40 +80,41 @@ jobs:
           echo "🚀 Iniciando Docker Stack..."
           docker compose up -d --build
 
-          echo "📋 Logs do backend (para debug):"
-          docker compose logs backend
-
           echo "⏳ Aguardando backend ficar pronto..."
           for i in {1..30}; do
-            if docker compose exec -T backend curl -sf http://localhost:8080/actuator/health; then
+            if wget -qO- http://localhost:8080/actuator/health 2>/dev/null | grep -q '"status":"UP"'; then
               echo "✅ Backend está pronto!"
-
-              echo "🧪 Testando endpoint customizado..."
-              docker compose exec -T backend curl -sf http://localhost:8080/api/health || echo "⚠️ API health falhou (mas actuator OK)"
-
-              echo "🧪 Testando frontend..."
-              if curl -f http://localhost:5173; then
-                echo "✅ Frontend respondendo!"
-              else
-                echo "❌ Frontend não respondeu"
-                docker compose logs frontend
-              fi
-
-              echo "✅ Docker Stack funcionando!"
               break
             fi
-            echo "Tentativa $i/30 falhou, aguardando..."
+            echo "Tentativa $i/30 - aguardando backend..."
             sleep 5
           done
 
           if [ $i -eq 30 ]; then
             echo "❌ Backend não respondeu a tempo."
-            echo "📋 Logs finais do backend:"
+            echo "📋 Logs do backend:"
             docker compose logs backend
-            echo "📋 Status dos containers:"
-            docker compose ps
             exit 1
           fi
+
+          echo "🧪 Testando endpoint customizado..."
+          if wget -qO- http://localhost:8080/api/health 2>/dev/null | grep -q '"status"'; then
+            echo "✅ API health funcionando!"
+          else
+            echo "⚠️ API health falhou (usando fallback actuator)"
+          fi
+
+          echo "🧪 Testando frontend..."
+          if wget -qO- http://localhost:5173 >/dev/null 2>&1; then
+            echo "✅ Frontend respondendo!"
+          else
+            echo "❌ Frontend não respondeu"
+            echo "📋 Logs do frontend:"
+            docker compose logs frontend
+            exit 1
+          fi
+
+          echo "✅ Docker Stack funcionando!"
 
       - name: 🧽 Parar containers
         if: always()
