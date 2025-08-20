@@ -77,6 +77,9 @@ jobs:
 
       - name: 🐳 Test Docker Stack
         run: |
+          echo "🛑 Parando PostgreSQL service para liberar porta 5432..."
+          docker stop $(docker ps -q --filter "ancestor=postgres:15") || true
+
           echo "🚀 Iniciando Docker Stack..."
           docker compose up -d --build
 
