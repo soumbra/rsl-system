@@ -60,6 +60,32 @@ classDiagram
         -String[] exclusionCriteria
     }
 
+    class QualityAssessment {
+        -Long id
+        -String[] questions
+        -Answer[] answers
+        -Float maxScore
+        -Float cutoffScore
+    }
+
+    class Answer {
+        -Long id
+        -String description
+        -Float weight
+    }
+
+    class ExtractionForm {
+        -Long id
+        -ExtractionField[] fields
+    }
+
+    class ExtractionField {
+        -Long id
+        -String description
+        -String type
+        -String values
+    }
+
     class Keyword {
         -Long id
         -String term
@@ -79,6 +105,10 @@ classDiagram
     Review "1" -- "1" ReviewConducting : has
     Review "1" -- "1" ReviewReporting : has
     ReviewPlanning "1" -- "1" Protocol : has
+    ReviewPlanning "1" -- "1" QualityAssessment : has
+    ReviewPlanning "1" -- "1" ExtractionForm : has
+    QualityAssessment "1" -- "0..*" Answer : contains
+    ExtractionForm "1" -- "0..*" ExtractionField : contains
     Protocol "1" -- "0..*" Keyword : contains
     Protocol "1" -- "0..*" Source : contains
 ```
