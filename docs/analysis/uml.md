@@ -38,6 +38,64 @@ classDiagram
 
     class ReviewConducting {
         -Long id
+        -Search search
+        -ImportStudies importStudies
+        -StudySelection studySelection
+        -QualityStudy qualityStudy
+        -DataExtraction dataExtraction
+        -DataAnalyses dataAnalyses
+    }
+
+    class Search {
+        -Long id
+        -String baseString
+    }
+
+    class ImportStudies {
+        -Long id
+        -Source[] sources
+        -Study[] importStudies
+    }
+
+    class Study {
+        -Long id
+        -String title
+        -String abstract
+        -Integer year
+        -String authors
+        -String keywords
+        -String documentType
+        -String pages
+        -String volume
+        -String doi
+        -ReviewerStudyAssessment[] reviewerEvaluations
+    }
+
+    class ReviewerStudyAssessment {
+        -Long id
+        -Long ownerId
+        -String status
+        -String appliedCriteria
+        -String comments
+        -LocalDateTime evaluatedAt
+    }
+
+    class StudySelection {
+        -Long id
+        -Study[] studies
+        -String status
+        -Study[] acceptedStudies
+        -LocalDateTime startedAt
+        -LocalDateTime completedAt
+        -String consensusMode
+        -Integer requiredAgreement
+    }
+
+    class StudyConsensus {
+        -Long id
+        -String finalDecision
+        -String consensusNotes
+        -LocalDateTime decidedAt
     }
 
     class ReviewReporting {
@@ -107,8 +165,19 @@ classDiagram
     ReviewPlanning "1" -- "1" Protocol : has
     ReviewPlanning "1" -- "1" QualityAssessment : has
     ReviewPlanning "1" -- "1" ExtractionForm : has
+    ReviewConducting "1" -- "1" Search : has
+    ReviewConducting "1" -- "1" ImportStudies : has
     QualityAssessment "1" -- "0..*" Answer : contains
     ExtractionForm "1" -- "0..*" ExtractionField : contains
     Protocol "1" -- "0..*" Keyword : contains
     Protocol "1" -- "0..*" Source : contains
+    ImportStudies "1" -- "0..*" Study : imports
+    Study "1" -- "0..*" ReviewerStudyAssessment : evaluated_by
+    ReviewConducting "1" -- "1" StudySelection : has
+    StudySelection "0..*" -- "0..*" Study : evaluates
+    StudySelection "0..*" -- "0..*" Study : accepts
+    Search "0..*" -- "0..*" Source : searches_in
+    Study "0..*" -- "1" Source : originated_from
+    StudySelection "1" -- "0..*" StudyConsensus : manages_consensus
+    StudyConsensus "0..1" -- "1" Study : decides_on
 ```
