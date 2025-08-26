@@ -51,7 +51,24 @@ classDiagram
 
     class ReviewReporting {
         -Long id
+        -Review review
+        -LocalDateTime generatedAt
+        +generateReport() ReportData
     }
+
+    class DataAnalyses {
+        +computeArticlesPerDatabase()
+        +computeFoundVsAccepted()
+        +computeFinalArticlesPerYear()
+    }
+
+    class ReportData {
+        -Map<String, Integer> articlesPerDatabase
+        -Map<String, Integer> articlesFoundVsAccepted
+        -Map<Integer, Integer> finalArticlesPerYear
+    }
+
+    note for ReportData "Objeto DTO ou Value Object. Não é armazenado no banco, apenas usado para retorno/visualização."
 
     %% Estudos e avaliações
     class Study {
@@ -241,6 +258,8 @@ classDiagram
     Review "1" -- "1" ReviewPlanning : has
     Review "1" -- "1" ReviewConducting : has
     Review "1" -- "1" ReviewReporting : has
+    ReviewReporting "1" ..> "1" DataAnalyses : uses
+    ReviewReporting "1" -- "0..1" ReportData : generates
     ReviewPlanning "1" -- "1" Protocol : has
     ReviewPlanning "1" -- "1" QualityAssessment : has
     ReviewPlanning "1" -- "1" ExtractionForm : has
