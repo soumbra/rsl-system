@@ -1,5 +1,6 @@
 ```mermaid
 classDiagram
+    %% Classes principais
     class User {
         -Long id
         -String username
@@ -48,17 +49,11 @@ classDiagram
         -DataAnalyses dataAnalyses
     }
 
-    class Search {
+    class ReviewReporting {
         -Long id
-        -String baseString
     }
 
-    class ImportStudies {
-        -Long id
-        -Source[] sources
-        -Study[] importStudies
-    }
-
+    %% Estudos e avaliações
     class Study {
         -Long id
         -String title
@@ -110,10 +105,7 @@ classDiagram
         -LocalDateTime detectedAt
     }
 
-    class ReviewReporting {
-        -Long id
-    }
-
+    %% Protocolos e formulários
     class Protocol {
         -Long id
         -String objectives
@@ -135,16 +127,10 @@ classDiagram
 
     class QualityAssessment {
         -Long id
-        -String[] questions
+        -QualityQuestion[] questions
         -Answer[] answers
         -Float maxScore
         -Float cutoffScore
-    }
-
-    class Answer {
-        -Long id
-        -String description
-        -Float weight
     }
 
     class ExtractionForm {
@@ -157,6 +143,12 @@ classDiagram
         -String description
         -String type
         -String values
+    }
+
+    class ExtractionValue {
+        -Long id
+        -ExtractionField field
+        -String value
     }
 
     class Keyword {
@@ -172,6 +164,21 @@ classDiagram
         -String searchString
     }
 
+    %% Data Extraction
+    class DataExtraction {
+        -Long id
+        -Long studyId
+        -Long userId
+        -Boolean extracted
+        -LocalDateTime timestamp
+        -ExtractionValue[] extractionValues
+        -String status
+        -Integer revisionNumber
+    }
+
+    note for DataExtraction "Índice recomendado: (studyId, userId)\nGarante performance e evita duplicidade"
+
+    %% Avaliação de qualidade
     class QualityStudy {
         -Long id
         -Study[] studiesForAssessment
@@ -188,11 +195,12 @@ classDiagram
         -String comments
         -String recommendation
         -LocalDateTime evaluatedAt
+        +QualityStudyAnswer[] answers
     }
 
     class QualityStudyAnswer {
         -Long id
-        -String question
+        -Long questionId
         -Answer selectedAnswer
         -Float score
     }
@@ -205,6 +213,29 @@ classDiagram
         -LocalDateTime decidedAt
     }
 
+    class Search {
+        -Long id
+        -String baseString
+    }
+
+    class ImportStudies {
+        -Long id
+        -Source[] sources
+        -Study[] importStudies
+    }
+
+    class Answer {
+        -Long id
+        -String description
+        -Float weight
+    }
+
+    class QualityQuestion {
+        -Long id
+        -String text
+    }
+
+    %% Relações principais
     User "1" -- "0..*" Review : owns
     User "0..*" -- "0..*" Review : participates
     Review "1" -- "1" ReviewPlanning : has
@@ -215,6 +246,7 @@ classDiagram
     ReviewPlanning "1" -- "1" ExtractionForm : has
     ReviewConducting "1" -- "1" Search : has
     ReviewConducting "1" -- "1" ImportStudies : has
+    QualityAssessment "1" -- "0..*" QualityQuestion : contains
     QualityAssessment "1" -- "0..*" Answer : contains
     ExtractionForm "1" -- "0..*" ExtractionField : contains
     Protocol "1" -- "0..*" Keyword : contains
@@ -238,8 +270,15 @@ classDiagram
     ReviewerQualityAssessment "0..*" -- "1" User : made_by
     ReviewerQualityAssessment "0..*" -- "1" Study : assesses_quality_of
     ReviewerQualityAssessment "1" -- "0..*" QualityStudyAnswer : has_answers
+    QualityStudyAnswer "0..*" -- "1" QualityQuestion : references_question
     QualityStudyAnswer "0..*" -- "1" Answer : uses_answer
     QualityStudy "1" -- "0..*" QualityConsensus : manages_quality_consensus
     QualityConsensus "0..*" -- "1" Study : decides_quality_of
     QualityConsensus "0..*" -- "1" User : registered_by
+    Study "1" -- "0..*" DataExtraction : has_extractions
+    User "1" -- "0..*" DataExtraction : performs
+    DataExtraction "1" -- "1" Study : belongs_to
+    DataExtraction "1" -- "1" User : extracted_by
+    DataExtraction "1" -- "0..*" ExtractionValue : contains
+    ExtractionValue "1" -- "1" ExtractionField : references_field
 ```
