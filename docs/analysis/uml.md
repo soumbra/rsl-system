@@ -56,19 +56,21 @@ classDiagram
         +generateReport() ReportData
     }
 
+    %% Nova classe para análises de dados (gráficos, agregações)
     class DataAnalyses {
         +computeArticlesPerDatabase()
         +computeFoundVsAccepted()
         +computeFinalArticlesPerYear()
     }
 
+    %% DTO/VO para relatório exportável
     class ReportData {
-        -Map<String, Integer> articlesPerDatabase
-        -Map<String, Integer> articlesFoundVsAccepted
-        -Map<Integer, Integer> finalArticlesPerYear
+        -List<Study> analyzedArticles
+        -Map<Study, List<User>> reviewersPerStudy
+        -Map<String, Integer> summaryMetrics
     }
 
-    note for ReportData "Objeto DTO ou Value Object. Não é armazenado no banco, apenas usado para retorno/visualização."
+    note for ReportData "DTO/VO. Não é armazenado no banco, apenas usado para retorno/visualização."
 
     %% Estudos e avaliações
     class Study {
@@ -88,6 +90,9 @@ classDiagram
         -String isbn
         -String number
         -ReviewerStudyAssessment[] reviewerEvaluations
+        -Boolean isDeleted
+        -LocalDateTime deletedAt
+        -User deletedBy
     }
 
     class ReviewerStudyAssessment {
@@ -96,7 +101,12 @@ classDiagram
         -String appliedCriteria
         -String comments
         -LocalDateTime evaluatedAt
+        -Boolean isDeleted
+        -LocalDateTime deletedAt
     }
+
+    note for ReviewerStudyAssessment "status: NOT_EVALUATED | INCLUDED | EXCLUDED | UNCERTAIN"
+    note for ReviewerStudyAssessment "Índice recomendado: (studyId, userId)"
 
     class StudySelection {
         -Long id
@@ -107,14 +117,24 @@ classDiagram
         -LocalDateTime completedAt
         -String consensusMode
         -Integer requiredAgreement
+        +Integer getTotalConflicts()
+        +Float getAgreementPercentage()
+        +Integer getStudiesNeedingConsensus()
     }
+
+    note for StudySelection "status: NOT_STARTED | IN_PROGRESS | COMPLETED"
 
     class StudyConsensus {
         -Long id
         -String finalDecision
         -String consensusNotes
         -LocalDateTime decidedAt
+        -LocalDateTime lastModifiedAt
+        -User lastModifiedBy
     }
+
+    note for StudyConsensus "finalDecision: INCLUDED | EXCLUDED | NEEDS_DISCUSSION"
+    note for Study "Índice composto: (title, authors) para detecção de duplicatas"
 
     class DuplicateGroup {
         -Long id
@@ -193,7 +213,20 @@ classDiagram
         -Integer revisionNumber
     }
 
+    note for DataExtraction "status: PENDING | EXTRACTED | REVIEWED"
     note for DataExtraction "Índice recomendado: (studyId, userId)\nGarante performance e evita duplicidade"
+
+    class DataExtractionConsensus {
+        -Long id
+        -String finalDecision
+        -String consensusNotes
+        -LocalDateTime decidedAt
+        -ExtractionValue[] finalValues
+        -LocalDateTime lastModifiedAt
+        -User lastModifiedBy
+    }
+
+    note for DataExtractionConsensus "finalDecision: APPROVED | NEEDS_REVISION | CONFLICTED"
 
     %% Avaliação de qualidade
     class QualityStudy {
@@ -204,6 +237,9 @@ classDiagram
         -LocalDateTime completedAt
         -String consensusMode
         -Float minimumQualityScore
+        +Integer getTotalStudiesAssessed()
+        +Integer getStudiesAwaitingConsensus()
+        +Float getCompletionPercentage()
     }
 
     class ReviewerQualityAssessment {
@@ -215,6 +251,8 @@ classDiagram
         +QualityStudyAnswer[] answers
     }
 
+    note for ReviewerQualityAssessment "recommendation: ACCEPT | REJECT | CONDITIONAL_ACCEPT"
+
     class QualityStudyAnswer {
         -Long id
         -Long questionId
@@ -222,13 +260,19 @@ classDiagram
         -Float score
     }
 
+    note for QualityStudyAnswer "Índice recomendado: (reviewerQualityAssessmentId)"
+
     class QualityConsensus {
         -Long id
         -Float finalScore
         -String finalDecision
         -String consensusNotes
         -LocalDateTime decidedAt
+        -LocalDateTime lastModifiedAt
+        -User lastModifiedBy
     }
+
+    note for QualityConsensus "finalDecision: ACCEPT | REJECT | CONDITIONAL_ACCEPT"
 
     class Search {
         -Long id
@@ -281,6 +325,7 @@ classDiagram
     StudyConsensus "0..1" -- "1" Study : decides_on
     ReviewerStudyAssessment "0..*" -- "1" User : made_by
     StudyConsensus "0..*" -- "1" User : registered_by
+    StudyConsensus "0..*" -- "1" User : last_modified_by
     DuplicateGroup "1" -- "1" Study : has_master
     DuplicateGroup "1" -- "0..*" Study : contains_duplicates
     ReviewConducting "1" -- "1" QualityStudy : has
@@ -288,16 +333,20 @@ classDiagram
     QualityStudy "0..*" -- "0..*" Study : assesses_quality
     ReviewerQualityAssessment "0..*" -- "1" User : made_by
     ReviewerQualityAssessment "0..*" -- "1" Study : assesses_quality_of
-    ReviewerQualityAssessment "1" -- "0..*" QualityStudyAnswer : has_answers
+    ReviewerQualityAssessment "1" -- "0..*" QualityStudyAnswer : contains_answers
     QualityStudyAnswer "0..*" -- "1" QualityQuestion : references_question
     QualityStudyAnswer "0..*" -- "1" Answer : uses_answer
     QualityStudy "1" -- "0..*" QualityConsensus : manages_quality_consensus
     QualityConsensus "0..*" -- "1" Study : decides_quality_of
     QualityConsensus "0..*" -- "1" User : registered_by
+    QualityConsensus "0..*" -- "1" User : last_modified_by
     Study "1" -- "0..*" DataExtraction : has_extractions
     User "1" -- "0..*" DataExtraction : performs
-    DataExtraction "1" -- "1" Study : belongs_to
-    DataExtraction "1" -- "1" User : extracted_by
     DataExtraction "1" -- "0..*" ExtractionValue : contains
     ExtractionValue "1" -- "1" ExtractionField : references_field
+    DataExtraction "1" -- "0..*" DataExtractionConsensus : manages_extraction_consensus
+    DataExtractionConsensus "0..*" -- "1" Study : decides_extraction_of
+    DataExtractionConsensus "0..*" -- "1" User : registered_by
+    DataExtractionConsensus "0..*" -- "1" User : last_modified_by
+    Study "0..*" -- "1" User : deleted_by
 ```
