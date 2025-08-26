@@ -25,6 +25,8 @@ classDiagram
         -ReviewPlanning planning
         -ReviewConducting conducting
         -ReviewReporting reporting
+        -String registrationNumber
+        -String registrationPlatform
         -LocalDateTime createdAt
         -LocalDateTime updatedAt
     }
@@ -68,12 +70,16 @@ classDiagram
         -String pages
         -String volume
         -String doi
+        -String journal
+        -String conference
+        -String publisher
+        -String isbn
+        -String number
         -ReviewerStudyAssessment[] reviewerEvaluations
     }
 
     class ReviewerStudyAssessment {
         -Long id
-        -Long ownerId
         -String status
         -String appliedCriteria
         -String comments
@@ -98,6 +104,12 @@ classDiagram
         -LocalDateTime decidedAt
     }
 
+    class DuplicateGroup {
+        -Long id
+        -String detectionCriteria
+        -LocalDateTime detectedAt
+    }
+
     class ReviewReporting {
         -Long id
     }
@@ -116,6 +128,9 @@ classDiagram
         -Source[] sources
         -String[] inclusionCriteria
         -String[] exclusionCriteria
+        -Integer version
+        -String changeLog
+        -LocalDateTime lastModified
     }
 
     class QualityAssessment {
@@ -180,4 +195,8 @@ classDiagram
     Study "0..*" -- "1" Source : originated_from
     StudySelection "1" -- "0..*" StudyConsensus : manages_consensus
     StudyConsensus "0..1" -- "1" Study : decides_on
+    ReviewerStudyAssessment "0..*" -- "1" User : made_by
+    StudyConsensus "0..*" -- "1" User : registered_by
+    DuplicateGroup "1" -- "1" Study : has_master
+    DuplicateGroup "1" -- "0..*" Study : contains_duplicates
 ```
