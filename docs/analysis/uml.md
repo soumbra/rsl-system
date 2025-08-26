@@ -172,6 +172,39 @@ classDiagram
         -String searchString
     }
 
+    class QualityStudy {
+        -Long id
+        -Study[] studiesForAssessment
+        -String status
+        -LocalDateTime startedAt
+        -LocalDateTime completedAt
+        -String consensusMode
+        -Float minimumQualityScore
+    }
+
+    class ReviewerQualityAssessment {
+        -Long id
+        -Float totalScore
+        -String comments
+        -String recommendation
+        -LocalDateTime evaluatedAt
+    }
+
+    class QualityStudyAnswer {
+        -Long id
+        -String question
+        -Answer selectedAnswer
+        -Float score
+    }
+
+    class QualityConsensus {
+        -Long id
+        -Float finalScore
+        -String finalDecision
+        -String consensusNotes
+        -LocalDateTime decidedAt
+    }
+
     User "1" -- "0..*" Review : owns
     User "0..*" -- "0..*" Review : participates
     Review "1" -- "1" ReviewPlanning : has
@@ -199,4 +232,14 @@ classDiagram
     StudyConsensus "0..*" -- "1" User : registered_by
     DuplicateGroup "1" -- "1" Study : has_master
     DuplicateGroup "1" -- "0..*" Study : contains_duplicates
+    ReviewConducting "1" -- "1" QualityStudy : has
+    QualityStudy "1" -- "0..*" ReviewerQualityAssessment : contains
+    QualityStudy "0..*" -- "0..*" Study : assesses_quality
+    ReviewerQualityAssessment "0..*" -- "1" User : made_by
+    ReviewerQualityAssessment "0..*" -- "1" Study : assesses_quality_of
+    ReviewerQualityAssessment "1" -- "0..*" QualityStudyAnswer : has_answers
+    QualityStudyAnswer "0..*" -- "1" Answer : uses_answer
+    QualityStudy "1" -- "0..*" QualityConsensus : manages_quality_consensus
+    QualityConsensus "0..*" -- "1" Study : decides_quality_of
+    QualityConsensus "0..*" -- "1" User : registered_by
 ```
