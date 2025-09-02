@@ -9,9 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Entidade StudyConsensus - representa o consenso entre revisores para um estudo com avaliações
  * conflitantes. Utilizada quando diferentes revisores têm opiniões divergentes sobre
@@ -22,7 +19,7 @@ import java.util.List;
     indexes = {@Index(name = "idx_consensus_study", columnList = "study_id"),
         @Index(name = "idx_consensus_review", columnList = "review_id"),
         @Index(name = "idx_consensus_decision", columnList = "final_decision"),
-        @Index(name = "idx_consensus_moderator", columnList = "last_modified_by")})
+        @Index(name = "idx_consensus_moderator", columnList = "last_modified_by_id")})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -57,10 +54,10 @@ public class StudyConsensus extends TrackableEntity {
   @Column(name = "discussion_resolved", nullable = false)
   private Boolean discussionResolved = false;
 
-  // Relacionamento com as avaliações que geraram o conflito
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "consensus_id")
-  private List<ReviewerStudyAssessment> conflictingAssessments = new ArrayList<>();
+  // TODO: Relacionamento será implementado via service/repository quando necessário
+  // @OneToMany(fetch = FetchType.LAZY)
+  // @JoinColumn(name = "consensus_id")
+  // private List<ReviewerStudyAssessment> conflictingAssessments = new ArrayList<>();
 
   // Construtor customizado
   public StudyConsensus(Study study, Review review, User moderator) {
@@ -122,31 +119,25 @@ public class StudyConsensus extends TrackableEntity {
   }
 
   public int getConflictingAssessmentsCount() {
-    return conflictingAssessments != null ? conflictingAssessments.size() : 0;
+    // TODO: Implementar via ConsensusService - buscar avaliações conflitantes por study_id +
+    // review_id
+    return 0;
   }
 
   // Método para adicionar avaliações conflitantes
   public void addConflictingAssessment(ReviewerStudyAssessment assessment) {
-    if (conflictingAssessments == null) {
-      conflictingAssessments = new ArrayList<>();
-    }
-    conflictingAssessments.add(assessment);
+    // TODO: Implementar via service - associação lógica, não JPA direta
+    // ConsensusService.addConflictingAssessment(consensusId, assessmentId)
   }
 
   // Método para gerar resumo do conflito automaticamente
   public void generateConflictSummary() {
-    if (conflictingAssessments == null || conflictingAssessments.isEmpty()) {
-      return;
-    }
+    // TODO: Implementar via service com query personalizada:
+    // SELECT reviewer_name, status FROM reviewer_study_assessments
+    // WHERE study_id = ? AND review_id = ?
+    // Para detectar conflitos automaticamente
 
-    StringBuilder summary = new StringBuilder("Conflito entre avaliações:\n");
-
-    for (ReviewerStudyAssessment assessment : conflictingAssessments) {
-      summary.append("- ").append(assessment.getReviewerName()).append(": ")
-          .append(assessment.getStatus()).append("\n");
-    }
-
-    this.conflictSummary = summary.toString();
+    this.conflictSummary = "Conflito detectado - resolução via moderador necessária";
   }
 
   // Métodos de conveniência

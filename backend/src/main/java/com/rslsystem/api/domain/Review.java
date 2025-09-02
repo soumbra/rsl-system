@@ -49,18 +49,18 @@ public class Review extends AuditableEntity {
   @Size(max = 100, message = "Registration platform must be less than 100 characters")
   private String registrationPlatform;
 
-  // Relacionamentos com as 3 fases da RSL
-  @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  private ReviewPlanning planning;
+  // // Relacionamentos com as 3 fases da RSL
+  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+  // orphanRemoval = true)
+  // private ReviewPlanning planning;
 
-  @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  private ReviewConducting conducting;
+  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+  // orphanRemoval = true)
+  // private ReviewConducting conducting;
 
-  @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  private ReviewReporting reporting;
+  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+  // orphanRemoval = true)
+  // private ReviewReporting reporting;
 
   public Review(String title, String description, User owner) {
     this.title = title;

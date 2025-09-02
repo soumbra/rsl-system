@@ -47,8 +47,8 @@ public class Source extends BaseEntity {
   @OneToMany(mappedBy = "originatedFrom", fetch = FetchType.LAZY)
   private List<Study> studies = new ArrayList<>();
 
-  @ManyToMany(mappedBy = "sources", fetch = FetchType.LAZY)
-  private List<Search> searches = new ArrayList<>();
+  // @ManyToMany(mappedBy = "sources", fetch = FetchType.LAZY)
+  // private List<Search> searches = new ArrayList<>();
 
   // Construtor customizado
   public Source(String name, String description) {

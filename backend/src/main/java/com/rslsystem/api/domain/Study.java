@@ -94,15 +94,15 @@ public class Study extends AuditableEntity {
       orphanRemoval = true)
   private List<ReviewerStudyAssessment> reviewerEvaluations = new ArrayList<>();
 
-  // Relacionamentos com extrações de dados
-  @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  private List<DataExtraction> dataExtractions = new ArrayList<>();
+  // // Relacionamentos com extrações de dados
+  // @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+  // orphanRemoval = true)
+  // private List<DataExtraction> dataExtractions = new ArrayList<>();
 
-  // Relacionamentos com avaliações de qualidade
-  @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-      orphanRemoval = true)
-  private List<ReviewerQualityAssessment> qualityAssessments = new ArrayList<>();
+  // // Relacionamentos com avaliações de qualidade
+  // @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
+  // orphanRemoval = true)
+  // private List<ReviewerQualityAssessment> qualityAssessments = new ArrayList<>();
 
   // Construtor customizado
   public Study(String title, String abstractText, Integer year, String authors) {
@@ -128,21 +128,21 @@ public class Study extends AuditableEntity {
     }
   }
 
-  public void addDataExtraction(DataExtraction extraction) {
-    if (dataExtractions == null) {
-      dataExtractions = new ArrayList<>();
-    }
-    dataExtractions.add(extraction);
-    extraction.setStudy(this);
-  }
+  // public void addDataExtraction(DataExtraction extraction) {
+  // if (dataExtractions == null) {
+  // dataExtractions = new ArrayList<>();
+  // }
+  // dataExtractions.add(extraction);
+  // extraction.setStudy(this);
+  // }
 
-  public void addQualityAssessment(ReviewerQualityAssessment assessment) {
-    if (qualityAssessments == null) {
-      qualityAssessments = new ArrayList<>();
-    }
-    qualityAssessments.add(assessment);
-    assessment.setStudy(this);
-  }
+  // public void addQualityAssessment(ReviewerQualityAssessment assessment) {
+  // if (qualityAssessments == null) {
+  // qualityAssessments = new ArrayList<>();
+  // }
+  // qualityAssessments.add(assessment);
+  // assessment.setStudy(this);
+  // }
 
   // Métodos de negócio
   public boolean hasValidDoi() {
