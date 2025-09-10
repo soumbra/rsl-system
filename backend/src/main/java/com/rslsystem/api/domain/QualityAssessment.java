@@ -1,7 +1,7 @@
 package com.rslsystem.api.domain;
 
 import com.rslsystem.api.domain.shared.AuditableEntity;
-import com.rslsystem.api.domain.shared.enums.QualityAssessmentStatus;
+import com.rslsystem.api.domain.shared.enums.WorkflowStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,8 +36,7 @@ public class QualityAssessment extends AuditableEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  @NotNull(message = "Quality assessment status is required")
-  private QualityAssessmentStatus status = QualityAssessmentStatus.DRAFT;
+  private WorkflowStatus status = WorkflowStatus.DRAFT;
 
   // === CONFIGURAÇÃO DO FRAMEWORK ===
   @Column(nullable = false, length = 50)
@@ -139,7 +138,7 @@ public class QualityAssessment extends AuditableEntity {
   public QualityAssessment(Review review, String framework) {
     this.review = review;
     this.framework = framework;
-    this.status = QualityAssessmentStatus.DRAFT;
+    this.status = WorkflowStatus.DRAFT;
     this.scoringMethod = "YES_NO";
     this.isMandatory = true;
     this.interRaterRequired = false;
@@ -151,33 +150,33 @@ public class QualityAssessment extends AuditableEntity {
 
   // Controle do status da avaliação de qualidade
   public void activateAssessment() {
-    if (this.status == QualityAssessmentStatus.DRAFT && canActivate()) {
-      this.status = QualityAssessmentStatus.ACTIVE;
+    if (this.status == WorkflowStatus.DRAFT && canActivate()) {
+      this.status = WorkflowStatus.ACTIVE;
     }
   }
 
   public void pauseAssessment() {
-    if (this.status == QualityAssessmentStatus.ACTIVE) {
-      this.status = QualityAssessmentStatus.PAUSED;
+    if (this.status == WorkflowStatus.ACTIVE) {
+      this.status = WorkflowStatus.PAUSED;
     }
   }
 
   public void resumeAssessment() {
-    if (this.status == QualityAssessmentStatus.PAUSED) {
-      this.status = QualityAssessmentStatus.ACTIVE;
+    if (this.status == WorkflowStatus.PAUSED) {
+      this.status = WorkflowStatus.ACTIVE;
     }
   }
 
   public void completeAssessment() {
-    if (this.status == QualityAssessmentStatus.ACTIVE
-        || this.status == QualityAssessmentStatus.PAUSED) {
-      this.status = QualityAssessmentStatus.COMPLETED;
+    if (this.status == WorkflowStatus.ACTIVE
+        || this.status == WorkflowStatus.PAUSED) {
+      this.status = WorkflowStatus.COMPLETED;
     }
   }
 
   public void archiveAssessment() {
-    if (this.status == QualityAssessmentStatus.COMPLETED) {
-      this.status = QualityAssessmentStatus.ARCHIVED;
+    if (this.status == WorkflowStatus.COMPLETED) {
+      this.status = WorkflowStatus.ARCHIVED;
     }
   }
 
@@ -208,38 +207,38 @@ public class QualityAssessment extends AuditableEntity {
   // === MÉTODOS DE CONSULTA DE STATUS ===
 
   public boolean isDraftStatus() {
-    return status == QualityAssessmentStatus.DRAFT;
+    return status == WorkflowStatus.DRAFT;
   }
 
   public boolean isActiveStatus() {
-    return status == QualityAssessmentStatus.ACTIVE;
+    return status == WorkflowStatus.ACTIVE;
   }
 
   public boolean isPausedStatus() {
-    return status == QualityAssessmentStatus.PAUSED;
+    return status == WorkflowStatus.PAUSED;
   }
 
   public boolean isCompletedStatus() {
-    return status == QualityAssessmentStatus.COMPLETED;
+    return status == WorkflowStatus.COMPLETED;
   }
 
   public boolean isArchivedStatus() {
-    return status == QualityAssessmentStatus.ARCHIVED;
+    return status == WorkflowStatus.ARCHIVED;
   }
 
   // === MÉTODOS DE CAPACIDADE ===
 
   public boolean isEditable() {
-    return status == QualityAssessmentStatus.DRAFT || status == QualityAssessmentStatus.PAUSED;
+    return status == WorkflowStatus.DRAFT || status == WorkflowStatus.PAUSED;
   }
 
   public boolean canBeUsed() {
-    return status == QualityAssessmentStatus.ACTIVE;
+    return status == WorkflowStatus.ACTIVE;
   }
 
   public boolean isFinished() {
-    return status == QualityAssessmentStatus.COMPLETED
-        || status == QualityAssessmentStatus.ARCHIVED;
+    return status == WorkflowStatus.COMPLETED
+        || status == WorkflowStatus.ARCHIVED;
   }
 
   // === CÁLCULOS E MÉTRICS ===

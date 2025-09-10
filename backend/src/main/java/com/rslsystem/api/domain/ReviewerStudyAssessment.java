@@ -1,7 +1,7 @@
 package com.rslsystem.api.domain;
 
 import com.rslsystem.api.domain.shared.AuditableEntity;
-import com.rslsystem.api.domain.shared.enums.StudyStatus;
+import com.rslsystem.api.domain.shared.enums.AssessmentDecision;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,8 +40,7 @@ public class ReviewerStudyAssessment extends AuditableEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  @NotNull(message = "Assessment status is required")
-  private StudyStatus status = StudyStatus.NOT_EVALUATED;
+  private AssessmentDecision decision = AssessmentDecision.NOT_EVALUATED;
 
   @Column(name = "inclusion_criteria", columnDefinition = "TEXT")
   @Size(max = 2000, message = "Inclusion criteria must be less than 2000 characters")
@@ -63,29 +62,29 @@ public class ReviewerStudyAssessment extends AuditableEntity {
     this.study = study;
     this.reviewer = reviewer;
     this.review = review;
-    this.status = StudyStatus.NOT_EVALUATED;
+    this.decision = AssessmentDecision.NOT_EVALUATED;
   }
 
   // Métodos de negócio para mudança de status
   public void markAsIncluded(String inclusionCriteria) {
-    this.status = StudyStatus.INCLUDED;
+    this.decision = AssessmentDecision.INCLUDED;
     this.inclusionCriteria = inclusionCriteria;
     this.exclusionCriteria = null; // Limpa critério de exclusão
   }
 
   public void markAsExcluded(String exclusionCriteria) {
-    this.status = StudyStatus.EXCLUDED;
+    this.decision = AssessmentDecision.EXCLUDED;
     this.exclusionCriteria = exclusionCriteria;
     this.inclusionCriteria = null; // Limpa critério de inclusão
   }
 
   public void markAsUncertain(String comments) {
-    this.status = StudyStatus.UNCERTAIN;
+    this.decision = AssessmentDecision.UNCERTAIN;
     this.comments = comments;
   }
 
   public void resetEvaluation() {
-    this.status = StudyStatus.NOT_EVALUATED;
+    this.decision = AssessmentDecision.NOT_EVALUATED;
     this.inclusionCriteria = null;
     this.exclusionCriteria = null;
     this.comments = null;
@@ -94,23 +93,23 @@ public class ReviewerStudyAssessment extends AuditableEntity {
 
   // Métodos de consulta
   public boolean isEvaluated() {
-    return status != StudyStatus.NOT_EVALUATED;
+    return decision != AssessmentDecision.NOT_EVALUATED;
   }
 
   public boolean isIncluded() {
-    return status == StudyStatus.INCLUDED;
+    return decision == AssessmentDecision.INCLUDED;
   }
 
   public boolean isExcluded() {
-    return status == StudyStatus.EXCLUDED;
+    return decision == AssessmentDecision.EXCLUDED;
   }
 
   public boolean isUncertain() {
-    return status == StudyStatus.UNCERTAIN;
+    return decision == AssessmentDecision.UNCERTAIN;
   }
 
   public boolean needsConsensus() {
-    return status == StudyStatus.UNCERTAIN;
+    return decision == AssessmentDecision.UNCERTAIN;
   }
 
   public boolean hasJustification() {
@@ -151,7 +150,7 @@ public class ReviewerStudyAssessment extends AuditableEntity {
     return "ReviewerStudyAssessment{" + "id=" + getId() + ", reviewerId="
         + (reviewer != null ? reviewer.getId() : null) + ", studyId="
         + (study != null ? study.getId() : null) + ", reviewId="
-        + (review != null ? review.getId() : null) + ", status=" + status + ", hasJustification="
+        + (review != null ? review.getId() : null) + ", status=" + decision + ", hasJustification="
         + hasJustification() + ", isDeleted=" + getIsDeleted() + '}';
   }
 }

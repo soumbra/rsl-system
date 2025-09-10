@@ -1,7 +1,7 @@
 package com.rslsystem.api.domain;
 
 import com.rslsystem.api.domain.shared.TrackableEntity;
-import com.rslsystem.api.domain.shared.enums.ConsensusDecision;
+import com.rslsystem.api.domain.shared.enums.AssessmentDecision;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,9 +36,8 @@ public class StudyConsensus extends TrackableEntity {
   private Review review;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "final_decision", nullable = false, length = 20)
-  @NotNull(message = "Final decision is required")
-  private ConsensusDecision finalDecision;
+  @Column(nullable = false, length = 20)
+  private AssessmentDecision consensusDecision = AssessmentDecision.NEEDS_DISCUSSION;
 
   @Column(name = "consensus_notes", columnDefinition = "TEXT")
   @Size(max = 3000, message = "Consensus notes must be less than 3000 characters")
@@ -63,14 +62,14 @@ public class StudyConsensus extends TrackableEntity {
   public StudyConsensus(Study study, Review review, User moderator) {
     this.study = study;
     this.review = review;
-    this.finalDecision = ConsensusDecision.NEEDS_DISCUSSION;
+    this.consensusDecision = AssessmentDecision.NEEDS_DISCUSSION;
     this.requiresDiscussion = true;
     updateModification(moderator.getId());
   }
 
   // Métodos de negócio para resolução de consenso
   public void resolveAsIncluded(String consensusNotes, User moderator) {
-    this.finalDecision = ConsensusDecision.INCLUDED;
+    this.consensusDecision = AssessmentDecision.INCLUDED;
     this.consensusNotes = consensusNotes;
     this.requiresDiscussion = false;
     this.discussionResolved = true;
@@ -78,7 +77,7 @@ public class StudyConsensus extends TrackableEntity {
   }
 
   public void resolveAsExcluded(String consensusNotes, User moderator) {
-    this.finalDecision = ConsensusDecision.EXCLUDED;
+    this.consensusDecision = AssessmentDecision.EXCLUDED;
     this.consensusNotes = consensusNotes;
     this.requiresDiscussion = false;
     this.discussionResolved = true;
@@ -86,7 +85,7 @@ public class StudyConsensus extends TrackableEntity {
   }
 
   public void markForDiscussion(String conflictSummary, User moderator) {
-    this.finalDecision = ConsensusDecision.NEEDS_DISCUSSION;
+    this.consensusDecision = AssessmentDecision.NEEDS_DISCUSSION;
     this.conflictSummary = conflictSummary;
     this.requiresDiscussion = true;
     this.discussionResolved = false;
@@ -103,7 +102,7 @@ public class StudyConsensus extends TrackableEntity {
 
   // Métodos de consulta
   public boolean isResolved() {
-    return finalDecision != ConsensusDecision.NEEDS_DISCUSSION && discussionResolved;
+    return consensusDecision != AssessmentDecision.NEEDS_DISCUSSION && discussionResolved;
   }
 
   public boolean needsDiscussion() {
@@ -111,11 +110,11 @@ public class StudyConsensus extends TrackableEntity {
   }
 
   public boolean isIncluded() {
-    return finalDecision == ConsensusDecision.INCLUDED;
+    return consensusDecision == AssessmentDecision.INCLUDED;
   }
 
   public boolean isExcluded() {
-    return finalDecision == ConsensusDecision.EXCLUDED;
+    return consensusDecision == AssessmentDecision.EXCLUDED;
   }
 
   public int getConflictingAssessmentsCount() {
@@ -166,7 +165,7 @@ public class StudyConsensus extends TrackableEntity {
   public String toString() {
     return "StudyConsensus{" + "id=" + getId() + ", studyId="
         + (study != null ? study.getId() : null) + ", reviewId="
-        + (review != null ? review.getId() : null) + ", finalDecision=" + finalDecision
+        + (review != null ? review.getId() : null) + ", consensusDecision=" + consensusDecision
         + ", isResolved=" + isResolved() + ", needsDiscussion=" + needsDiscussion()
         + ", conflictingCount=" + getConflictingAssessmentsCount() + ", lastModifiedBy="
         + getLastModifiedByUserId() + ", lastModified=" + getLastModifiedAt() + '}';

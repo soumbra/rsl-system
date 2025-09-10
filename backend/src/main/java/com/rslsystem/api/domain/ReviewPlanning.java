@@ -1,7 +1,7 @@
 package com.rslsystem.api.domain;
 
 import com.rslsystem.api.domain.shared.AuditableEntity;
-import com.rslsystem.api.domain.shared.enums.PlanningStatus;
+import com.rslsystem.api.domain.shared.enums.WorkflowStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,8 +37,8 @@ public class ReviewPlanning extends AuditableEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  @NotNull(message = "Planning status is required")
-  private PlanningStatus status = PlanningStatus.DRAFT;
+  @NotNull(message = "Status is required")
+  private WorkflowStatus status = WorkflowStatus.DRAFT;
 
   // === QUESTÕES DE PESQUISA ===
   @Column(name = "research_questions", columnDefinition = "TEXT")
@@ -115,41 +115,41 @@ public class ReviewPlanning extends AuditableEntity {
   // Construtor customizado
   public ReviewPlanning(Review review) {
     this.review = review;
-    this.status = PlanningStatus.DRAFT;
+    this.status = WorkflowStatus.DRAFT;
   }
 
   // === MÉTODOS DE NEGÓCIO ===
 
   // Controle do status do planejamento
   public void startPlanning() {
-    if (this.status == PlanningStatus.DRAFT) {
-      this.status = PlanningStatus.IN_PROGRESS;
+    if (this.status == WorkflowStatus.DRAFT) {
+      this.status = WorkflowStatus.IN_PROGRESS;
     }
   }
 
   public void completePlanning() {
-    if (this.status == PlanningStatus.IN_PROGRESS && canComplete()) {
-      this.status = PlanningStatus.COMPLETED;
+    if (this.status == WorkflowStatus.IN_PROGRESS && canComplete()) {
+      this.status = WorkflowStatus.COMPLETED;
     }
   }
 
   public void approvePlanning() {
-    if (this.status == PlanningStatus.COMPLETED) {
-      this.status = PlanningStatus.APPROVED;
+    if (this.status == WorkflowStatus.COMPLETED) {
+      this.status = WorkflowStatus.APPROVED;
     }
   }
 
   public void rejectPlanning(String reason) {
-    if (this.status == PlanningStatus.COMPLETED) {
-      this.status = PlanningStatus.REJECTED;
+    if (this.status == WorkflowStatus.COMPLETED) {
+      this.status = WorkflowStatus.REJECTED;
       this.planningNotes =
           (this.planningNotes != null ? this.planningNotes + "\n" : "") + "Rejeitado: " + reason;
     }
   }
 
   public void resetToInProgress() {
-    if (this.status == PlanningStatus.REJECTED) {
-      this.status = PlanningStatus.IN_PROGRESS;
+    if (this.status == WorkflowStatus.REJECTED) {
+      this.status = WorkflowStatus.IN_PROGRESS;
     }
   }
 
@@ -182,28 +182,28 @@ public class ReviewPlanning extends AuditableEntity {
 
   // === MÉTODOS DE CONSULTA ===
 
-  public boolean isDraft() {
-    return status == PlanningStatus.DRAFT;
+  public boolean isDraftStatus() {
+    return status == WorkflowStatus.DRAFT;
   }
 
-  public boolean isInProgress() {
-    return status == PlanningStatus.IN_PROGRESS;
+  public boolean isInProgressStatus() {
+    return status == WorkflowStatus.IN_PROGRESS;
   }
 
-  public boolean isCompleted() {
-    return status == PlanningStatus.COMPLETED;
+  public boolean isCompletedStatus() {
+    return status == WorkflowStatus.COMPLETED;
   }
 
-  public boolean isApproved() {
-    return status == PlanningStatus.APPROVED;
+  public boolean isApprovedStatus() {
+    return status == WorkflowStatus.APPROVED;
   }
 
   public boolean isRejected() {
-    return status == PlanningStatus.REJECTED;
+    return status == WorkflowStatus.REJECTED;
   }
 
   public boolean canStartConducting() {
-    return status == PlanningStatus.APPROVED;
+    return status == WorkflowStatus.APPROVED;
   }
 
   // Calcula progresso do planejamento (0-100%)

@@ -1,16 +1,13 @@
 package com.rslsystem.api.domain;
 
 import com.rslsystem.api.domain.shared.AuditableEntity;
-import com.rslsystem.api.domain.shared.enums.StudySelectionStatus;
+import com.rslsystem.api.domain.shared.enums.WorkflowStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Entidade StudySelection - orquestra o processo de seleção de estudos com "visões isoladas".
@@ -33,8 +30,8 @@ public class StudySelection extends AuditableEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  @NotNull(message = "Selection status is required")
-  private StudySelectionStatus status = StudySelectionStatus.NOT_STARTED;
+  @NotNull
+  private WorkflowStatus status = WorkflowStatus.NOT_STARTED;
 
   @Column(name = "selection_phase", length = 50)
   @Size(max = 50, message = "Selection phase must be less than 50 characters")
@@ -65,27 +62,26 @@ public class StudySelection extends AuditableEntity {
   // Construtor customizado
   public StudySelection(Review review) {
     this.review = review;
-    this.status = StudySelectionStatus.NOT_STARTED;
+    this.status = WorkflowStatus.NOT_STARTED;
     this.selectionPhase = "TITLE_ABSTRACT";
   }
 
   // Métodos de controle do processo
   public void startSelection() {
-    if (this.status == StudySelectionStatus.NOT_STARTED) {
-      this.status = StudySelectionStatus.IN_PROGRESS;
+    if (this.status == WorkflowStatus.NOT_STARTED) {
+      this.status = WorkflowStatus.IN_PROGRESS;
       updateMetrics();
     }
   }
 
   public void completeSelection() {
-    if (this.status == StudySelectionStatus.IN_PROGRESS
-        && consensusNeeded.equals(consensusResolved)) {
-      this.status = StudySelectionStatus.COMPLETED;
+    if (this.status == WorkflowStatus.IN_PROGRESS && consensusNeeded.equals(consensusResolved)) {
+      this.status = WorkflowStatus.COMPLETED;
     }
   }
 
   public void resetSelection() {
-    this.status = StudySelectionStatus.NOT_STARTED;
+    this.status = WorkflowStatus.NOT_STARTED;
     this.evaluatedStudies = 0;
     this.consensusNeeded = 0;
     this.consensusResolved = 0;
@@ -111,15 +107,15 @@ public class StudySelection extends AuditableEntity {
 
   // Métodos de consulta e métricas
   public boolean isCompleted() {
-    return status == StudySelectionStatus.COMPLETED;
+    return status == WorkflowStatus.COMPLETED;
   }
 
   public boolean isInProgress() {
-    return status == StudySelectionStatus.IN_PROGRESS;
+    return status == WorkflowStatus.IN_PROGRESS;
   }
 
   public boolean isNotStarted() {
-    return status == StudySelectionStatus.NOT_STARTED;
+    return status == WorkflowStatus.NOT_STARTED;
   }
 
   public boolean hasPendingConsensus() {

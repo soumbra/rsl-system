@@ -71,17 +71,17 @@ public enum QualityRecommendation {
     }
   }
 
-  // Converter para ConsensusDecision (para processos de consenso)
-  public ConsensusDecision toConsensusDecision() {
+  // Converter para AssessmentDecision (para processos de consenso)
+  public AssessmentDecision toAssessmentDecision() {
     switch (this) {
       case ACCEPT:
-        return ConsensusDecision.INCLUDED;
+        return AssessmentDecision.INCLUDED;
       case REJECT:
-        return ConsensusDecision.EXCLUDED;
+        return AssessmentDecision.EXCLUDED;
       case CONDITIONAL_ACCEPT:
-        return ConsensusDecision.NEEDS_DISCUSSION;
+        return AssessmentDecision.CONDITIONAL;
       default:
-        return ConsensusDecision.NEEDS_DISCUSSION;
+        return AssessmentDecision.UNCERTAIN;
     }
   }
 
