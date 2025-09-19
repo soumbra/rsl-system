@@ -120,3 +120,35 @@ Próxima semana: CI básico (build + test)
 ├── DataExtraction + ExtractionForm + ExtractionField
 ├── QualityStudy + ReviewerQualityAssessment
 └── DataAnalyses + ReportData
+
+---
+
+1. 📊 COMPLETAR FASE 4 (4 entidades DataExtraction)
+   └── DataExtraction, ExtractionForm, ExtractionField, ReviewerDataExtraction
+
+2. 📈 IMPLEMENTAR FASE 5 (3 entidades Análise/Relatórios)
+   └── DataAnalyses, ReportData, ReviewResults
+
+3. 🔧 SERVICES LAYER (Lógica de Negócio)
+   └── Planning, Protocol, Conducting, Extraction Services
+
+4. 🌐 CONTROLLERS REST (APIs para Frontend)
+   └── Reviews, Planning, Conducting, Extraction APIs
+
+5. 🧪 TESTES UNITÁRIOS E INTEGRAÇÃO
+   └── Cobertura completa do domínio
+
+---
+
+Novo roadmap:
+
+## 📅 Novo Roadmap
+
+| Sprint   | Semanas | Foco                    | Entregas                                                 |
+| -------- | ------- | ----------------------- | -------------------------------------------------------- |
+| Sprint 1 | 1-2     | 🔍 Busca + Importação   | Search, ImportStudies, DuplicateGroup                    |
+| Sprint 2 | 3-4     | 📈 Análise + Relatórios | DataAnalyses, ReviewResults, ReviewReporting, ReportData |
+| Sprint 3 | 5       | 🎯 Qualidade Avançada   | QualityQuestion, Answer                                  |
+| Sprint 4 | 6-7     | 🔧 Services Layer       | Core + Workflow Services                                 |
+| Sprint 5 | 8-9     | 🌐 Controllers REST     | APIs completas                                           |
+| Sprint 6 | 10-11   | 🧪 Testing Suite        | Cobertura 80%+                                           |

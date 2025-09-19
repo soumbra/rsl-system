@@ -93,14 +93,11 @@ public class Study extends AuditableEntity {
       orphanRemoval = true)
   private List<ReviewerStudyAssessment> reviewerEvaluations = new ArrayList<>();
 
-  // // Relacionamentos com extrações de dados
-  // @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-  // orphanRemoval = true)
-  // private List<DataExtraction> dataExtractions = new ArrayList<>();
+  @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  private List<DataExtraction> dataExtractions = new ArrayList<>();
 
   // // Relacionamentos com avaliações de qualidade
-  // @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-  // orphanRemoval = true)
+  // @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   // private List<ReviewerQualityAssessment> qualityAssessments = new ArrayList<>();
 
   // Construtor customizado

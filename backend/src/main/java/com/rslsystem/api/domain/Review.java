@@ -50,17 +50,14 @@ public class Review extends AuditableEntity {
   private String registrationPlatform;
 
   // // Relacionamentos com as 3 fases da RSL
-  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-  // orphanRemoval = true)
-  // private ReviewPlanning planning;
+  @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  private ReviewPlanning planning;
 
-  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-  // orphanRemoval = true)
-  // private ReviewConducting conducting;
+  @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  private ReviewConducting conducting;
 
-  // @OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-  // orphanRemoval = true)
-  // private ReviewReporting reporting;
+  //@OneToOne(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  //private ReviewReporting reporting;
 
   public Review(String title, String description, User owner) {
     this.title = title;
